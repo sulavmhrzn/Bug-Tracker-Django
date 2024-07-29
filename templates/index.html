@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static "src/output.css" %}">
+</head>
+<body>
+<div class="h-screen flex bg-gradient-to-r from-red-500 to-orange-500">
+    <div class="m-auto flex justify-evenly items-center">
+        <div class="w-full h-full">
+            <img src="{% static 'img/bug.svg' %}" alt="">
+        </div>
+        <div class="w-full">
+            <div class="m-auto align-middle">
+                <h1 class="font-bold text-6xl text-left">Welcome to <br><span class="text-white text-7xl font-source-code-pro">Bug Tracker</span></h1>
+                <div class="mt-10">
+                <a href="{% url 'signup' %}" class="btn btn-outline btn-block mb-3">Signup</a>
+                <div class="divider">OR</div>
+                <a href="{% url 'login' %}" class="btn btn-block">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

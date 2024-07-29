@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-6xl text-center p-4 my-3 font-bold "> {{ projects.count }} projects </h1>
+    <div class="flex flex-col justify-around flex-wrap items-start mx-10">
+        {% for project in projects %}
+            <div class="card w-full card-base-100 mb-2 shadow-sm">
+                <div class="card-body border mb-2 rounded-md">
+                    <h2 class="card-title">
+                        <a class="link" href="{% url 'detail_project' project.id %}">
+                            {{ project.name }}
+                        </a>
+                    </h2>
+                    <p><span class="font-bold">DESCRIPTION</span>: {{ project.description|truncatewords:30 }}</p>
+                    <p><span class="font-bold">Created At</span>: {{ project.created_at }}</p>
+                    <p><span class="font-bold">Last Updated At</span>: {{ project.updated_at }}</p>
+                    <div class="flex gap-4">
+                        <div class="card-actions">
+                            <button class="btn btn-warning" onclick="my_modal_{{ project.id }}.showModal()">Delete</button>
+                            <dialog id="my_modal_{{ project.id }}" class="modal">
+                                <div class="modal-box">
+                                    <h3 class="text-lg font-bold">⚠️ Are you sure you want to delete project "{{ project.name }}"? ⚠️</h3>
+                                    <p class="py-4">Deleting this project will delete all bugs related to this project
+                                        as well.
+                                        <span class="font-bold">Please proceed with caution!</span></p>
+                                    <div class="modal-action">
+                                        <form method="dialog">
+                                            <button class="btn">Close</button>
+                                        </form>
+                                        <form action="{% url 'delete_project'  project.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-warning">Delete {{ project.name }}</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </dialog>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'detail_project' project.id %}" class="btn btn-neutral">View</a>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'update_project' project.id %}" class="btn btn-neutral">Update</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

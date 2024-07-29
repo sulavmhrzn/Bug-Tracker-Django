@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="w-2/3 m-auto bordered border-2 p-2 mt-3">
+        <h1 class="text-4xl font-bold my-3 text-center text-neutral">🪲 Update bug: {{ bug.title }} 🪲 </h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label class="form-control ">
+                <div class="label">
+                    <span class="label-text">Priority</span>
+                </div>
+                {{ form.priority }}
+                <div class="label">
+                    <span class="label-text">{{ form.priority.errors }}</span>
+                </div>
+            </label>
+            <label class="form-control ">
+                <div class="label">
+                    <span class="label-text">Status</span>
+                </div>
+                {{ form.status }}
+                <div class="label">
+                    <span class="label-text">{{ form.status.errors }}</span>
+                </div>
+            </label>
+            <button type="submit" class="btn btn-neutral my-2">Update</button>
+        </form>
+    </div>
+{% endblock %}

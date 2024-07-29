@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="w-10/12 m-auto">
+        <div class="shadow-md mt-10 p-2">
+            <h1 class="text-4xl text-left p-4 my-3 font-bold"> Projects </h1>
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <td><a href="{% url 'detail_project' project.id %}" class="link">{{ project.name }}</a></td>
+                            <td>{{ project.created_at }}</td>
+                            <td>{{ project.updated_at }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <a href="{% url 'list_projects' %}" class="btn btn-block btn-neutral">View all</a>
+            </div>
+        </div>
+        <div class="flex h-full justify-around mt-10 shadow-md p-2">
+            <div class="h-1/2 w-1/2">
+                <h1 class="text-3xl font-bold">Bugs by priority</h1>
+                <canvas id="chart-priority"></canvas>
+            </div>
+            <div class="divider divider-horizontal divider-error"></div>
+            <div class="h-1/2 w-1/2">
+                <h1 class="text-3xl font-bold">Bugs by Status</h1>
+                <canvas id="chart-status"></canvas>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('chart-priority');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Low", "Medium", "High"],
+                datasets: [{
+                    label: '# of Bugs',
+                    data: ["{{ priority_counts.low_priority_bugs }}", "{{ priority_counts.medium_priority_bugs }}", "{{ priority_counts.high_priority_bugs }}"],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const ctxStatus = document.getElementById('chart-status');
+        new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ["Open", "In Progress", "Closed"],
+                datasets: [{
+                    label: '# of Bugs',
+                    data: ["{{ status_counts.open_status_bugs }}", "{{ status_counts.inprogress_status_bugs }}", "{{ status_counts.closed_status_bugs }}"],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

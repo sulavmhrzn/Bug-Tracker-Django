@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-6xl text-center p-4 my-3 font-bold ">🪲 {{ bugs.count }} Bugs 🪲</h1>
+    <form action="" method="get">
+        <div class="flex flex-row gap-4 m-10">
+            {{ bug_filter_form.as_p }}
+            <button type="submit" class="btn">Filter</button>
+            <a class="btn" href="{% url 'list_bug' %}">Clear</a>
+        </div>
+    </form>
+
+    <div class="flex flex-col justify-around flex-wrap items-start mx-10">
+        {% for bug in bugs %}
+            <div class="card w-full card-base-100 shadow-xl">
+                <div class="card-body border-2 mb-2 rounded-md
+                 {% if bug.priority == "L" %}
+                                 border-black
+                            {% elif bug.priority == "M" %}
+                                border-warning
+                            {% elif bug.priority == "H" %}
+                                border-error
+                {% endif %}
+                ">
+                    <h2 class="card-title
+                            {% if bug.priority == "L" %}
+                                 text-black
+                            {% elif bug.priority == "M" %}
+                                text-warning
+                            {% else %}
+                                text-error
+                            {% endif %}">
+                        {{ bug.title }}
+                    </h2>
+                    <p>PROJECT: <a class="link" href="{% url 'detail_project' bug.project.id %}">{{ bug.project }}</a>
+                    </p>
+                    <p>DESCRIPTION: {{ bug.description|truncatewords:10|safe }}</p>
+                    <p>PRIORITY: {{ bug.get_priority_display }}</p>
+                    <p>STATUS: {{ bug.get_status_display }}</p>
+                    <p>Assigned To: {{ bug.assigned_to }}</p>
+                    <div class="flex gap-4">
+                        {% if request.user.is_manager %}
+                            <div class="card-actions">
+                                <button class="btn btn-warning" onclick="my_modal_{{ bug.id }}.showModal()"><i class="fa-solid fa-trash fa-md"></i> Delete
+                                </button>
+                                <dialog id="my_modal_{{ bug.id }}" class="modal">
+                                    <div class="modal-box">
+                                        <h3 class="text-lg font-bold">⚠️ Are you sure you want to delete bug
+                                            "{{ bug.title }}"? ⚠️</h3>
+                                        <p class="py-4"><span class="font-bold">Please proceed with caution!</span></p>
+                                        <div class="modal-action">
+                                            <form method="dialog">
+                                                <button class="btn">Close</button>
+                                            </form>
+                                            <form action="{% url 'delete_bug'  bug.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-warning">
+                                                    Delete {{ bug.title }}</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </dialog>
+                            </div>
+                        {% endif %}
+                        <div class="card-actions">
+                            <a href="{% url 'detail_bug' bug.id %}" class="btn btn-neutral">View</a>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'update_bug' bug.id %}" class="btn btn-neutral">Update</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="w-1/2 m-auto my-10">
+        <div class="join">
+            {% if bugs.has_previous %}
+                <a href="?page={{ bugs.previous_page_number }}" class="join-item rounded-xl btn btn-block btn-outline">Previous
+                    page</a>
+            {% endif %}
+            {% if not bugs.has_previous %}
+                <button class="join-item rounded-xl btn btn-block btn-outline" disabled>Previous Page</button>
+            {% endif %}
+            <button class="join-item btn">{{ bugs.number }} of {{ bugs.paginator.num_pages }}</button>
+            {% if not bugs.has_next %}
+                <button class="join-item rounded-xl btn btn-block btn-outline" disabled>Next Page</button>
+            {% endif %}
+            {% if bugs.has_next %}
+                <a href="?page={{ bugs.next_page_number }}" class="join-item rounded-xl btn btn-block btn-outline">Next
+                    Page
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
